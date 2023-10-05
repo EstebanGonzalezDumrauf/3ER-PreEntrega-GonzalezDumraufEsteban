@@ -125,25 +125,30 @@ router.get('/carts/:cid', privateAccess, async (req, res) => {
         const { cid } = req.params;
         let carrito = await cartModel.findOne({ _id: cid }).populate('arrayCart.product');
         let totalCarrito = 0;
+        let cantidadItems = 0;
+        let cartItems= [];
 
-        const cartItems = carrito.arrayCart.map(item => {
-            const subtotal = item.quantity * item.product.price;
-            totalCarrito += subtotal;
-            return {
-                title: item.product.title,
-                price: item.product.price,
-                quantity: item.quantity,
-                id: item._id,
-                thumbnail: item.product.thumbnail,
-                subtotal: subtotal,
-            };
-        });
-
-        console.log(cartItems, totalCarrito);
+        if (carrito) {
+            cartItems = carrito.arrayCart.map(item => {
+                const subtotal = item.quantity * item.product.price;
+                totalCarrito += subtotal;
+                cantidadItems += item.quantity;
+                return {
+                    title: item.product.title,
+                    price: item.product.price,
+                    quantity: item.quantity,
+                    id: item._id,
+                    thumbnail: item.product.thumbnail,
+                    subtotal: subtotal,
+                };
+            });    
+            //console.log(cartItems, totalCarrito);
+        }
 
         res.render('cart', {
             cartProducts: cartItems,
             totalCarrito,
+            cantidadItems,
             user: req.session.user
         });
 

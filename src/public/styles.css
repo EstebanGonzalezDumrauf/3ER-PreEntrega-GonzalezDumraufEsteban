@@ -328,8 +328,47 @@ input[type="submit"]:hover {
     margin-bottom: 2px;
     margin-top: 0;
     padding: 0;
-    background-color: #f5d9c9;
+    background-color: rgba(153, 217, 234);
     border-radius: 2px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Agrega estilos para el contenedor principal */
+.header-container {
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+}
+
+/* Estilos para el contenedor de datos de inicio de sesión y cierre de sesión */
+.user-logout {
+    display: flex;
+    align-items: center;
+}
+
+/* Ajusta el margen entre el carrito y los datos de inicio de sesión */
+.cart-container {
+    margin-right: 20px;
+    align-items: flex-start;
+}
+
+/* Estilos para el contenedor del carrito */
+.cart-icon {
+    display: flex;
+    align-items:center;
+
+}
+
+/* Ajusta el margen derecho del icono del carrito según sea necesario */
+.cart-icon img {
+    margin-right: 10px;
+}
+
+.empty-cart-message {
+    text-align: center;
+    font-size: 18px;
+    color: #888; /* Color de texto gris */
+    padding: 20px;
+    border: 1px solid #ccc; /* Borde gris claro */
+    background-color: #f9f9f9; /* Fondo gris claro */
+}

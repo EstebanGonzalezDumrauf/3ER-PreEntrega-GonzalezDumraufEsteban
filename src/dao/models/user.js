@@ -10,8 +10,10 @@ const schema = new mongoose.Schema({
     password: String,
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'carts', 
-        default: null
+        ref: 'carts',
+        default: function () {
+            return new mongoose.Types.ObjectId();
+        }
     },
     rol: { /////PROBAR CON UN REGISTER
         type: String,

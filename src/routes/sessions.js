@@ -39,7 +39,6 @@ router.get('/failLogin', (req,res)=> {
     return res.status(400).send({status: "error", error: "Usuario no existe o password incorrecto"});
 });
 
-// ESTO FUNCIONABAAAAAA EN PASSPORT.JS
 router.post('/register', passport.authenticate('register', {failureRedirect: '/failRegister'}) ,async (req, res) => {
     res.send({status: "success", message: "Usuario registrado"})
 })
