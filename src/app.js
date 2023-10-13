@@ -13,6 +13,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { initializePassport } from './config/passport.js';
+import config from './config/config.js';
 
 import {
     Server
@@ -22,7 +23,9 @@ import {
 } from './dao/models/chat.js';
 
 const app = express();
-const port = 8080;
+//const port = 8080;
+
+//console.log(config.port);
 
 app.engine('handlebars', handlebars.engine());
 //app.set('views', __dirName, '/views');
@@ -37,7 +40,7 @@ app.use(express.urlencoded({
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://estebangonzalezd:coder1234@clusterestebangonzalezd.wuhulk1.mongodb.net/Ecommerce',
+        mongoUrl: config.mongoURL,
         ttl: 5000
     }),
     secret: "secretCoder",
@@ -64,13 +67,13 @@ app.use('/api/carts', cartRouter);
 // }
 // environment();
 
-const connection = mongoose.connect('mongodb+srv://estebangonzalezd:coder1234@clusterestebangonzalezd.wuhulk1.mongodb.net/Ecommerce',{
+const connection = mongoose.connect(config.mongoURL,{
         useNewUrlParser: true,
         useUnifiedTopology: true
 });
 
-const server = app.listen(port, () => {
-    console.log(`Server ON en puerto ${port}`);
+const server = app.listen(config.port, () => {
+    console.log(`Server ON en puerto ${config.port}`);
 });
 
 const io = new Server(server);

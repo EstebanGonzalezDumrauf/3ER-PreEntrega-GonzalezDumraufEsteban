@@ -24,7 +24,7 @@ router.get('/current', (req, res)=> {
     res.send({status: "success", payload: req.user});//.redirect('/products');
 });
 
-// ESTO FUNCIONABAAAAAA EN PASSPORT.JS
+
 router.post('/login', passport.authenticate('login', {failureRedirect: '/api/sessions/failLogin'}) ,async (req, res) => {
     if (!req.user) {
         console.log("entro aca ");
@@ -42,19 +42,6 @@ router.get('/failLogin', (req,res)=> {
 router.post('/register', passport.authenticate('register', {failureRedirect: '/failRegister'}) ,async (req, res) => {
     res.send({status: "success", message: "Usuario registrado"})
 })
-// router.post('/register', (req, res) => {
-//     const { first_name, last_name, email, age, password } = req.body;
-
-//     const user = {
-//         first_name,
-//         last_name,
-//         email,
-//         age,
-//         password: createHash(password)
-//     }
-//     const accessToken = generateToken(user);
-//     res.send({status: "success", accessToken})
-// })
 
 router.get('/failRegister', async(req, res)=> {
     console.log("Fallo la estrategia");
