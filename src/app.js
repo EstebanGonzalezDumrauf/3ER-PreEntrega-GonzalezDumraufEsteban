@@ -20,12 +20,9 @@ import {
 } from "socket.io";
 import {
     chatModel
-} from './dao/models/chat.js';
+} from './models/chat.js';
 
 const app = express();
-//const port = 8080;
-
-//console.log(config.port);
 
 app.engine('handlebars', handlebars.engine());
 //app.set('views', __dirName, '/views');
@@ -58,14 +55,6 @@ app.use('/api/sessions', sessionsRouter)
 //app.use('/', registersRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
-
-// const environment = async () => {
-//     await mongoose.connect('mongodb+srv://estebangonzalezd:coder1234@clusterestebangonzalezd.wuhulk1.mongodb.net/Ecommerce',{
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     });
-// }
-// environment();
 
 const connection = mongoose.connect(config.mongoURL,{
         useNewUrlParser: true,

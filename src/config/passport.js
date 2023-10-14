@@ -1,6 +1,7 @@
 import passport from "passport";
 import local from "passport-local"
-import { userModel } from "../dao/models/user.js"
+import { userModel } from "../models/user.js"
+import { getUser, addUser } from "../controllers/sessions.js"
 import { createHash, isValidPassword } from '../utils.js'
 import gitHubStrategy from 'passport-github2';
 
@@ -10,7 +11,9 @@ export const initializePassport = () => {
     passport.use('register', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
         try {
-            const exists = await userModel.findOne({ email });
+            //const exists = await userModel.findOne({ email });
+            const exists = await getUser(email);
+
             if (exists) {
                 console.log('El usuario ya existe')
                 return done(null, false);
@@ -22,7 +25,8 @@ export const initializePassport = () => {
                 age,
                 password: createHash(password)
             };
-            let result = await userModel.create(newUser);
+            //let result = await userModel.create(newUser);
+            let result = await addUser(newUser);
             return done(null, result)
         } catch (error) {
             return done('Error al crear el usuario:' + error)
@@ -31,7 +35,9 @@ export const initializePassport = () => {
 
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
         try {
-            let user = await userModel.findOne({ email: username });
+            //let user = await userModel.findOne({ email: username });
+            let user = await getUser(username);
+
             if (username === "adminCoder@coder.com" && password === "adminCod3r123") {
                 user = {
                     first_name: "Super Usuario",
@@ -61,10 +67,13 @@ export const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             console.log(profile);
-            let user = await userModel.findOne({ first_name: profile._json.name, email: profile._json.username });
+            //let user = await userModel.findOne({ first_name: profile._json.name, email: profile._json.username });
+            let user = await getUser(profile._json.username);
             if (!user) {
                 let newUser = {first_name: profile._json.name, email: profile._json.username};
-                let result = await userModel.create(newUser);
+                
+                //let result = await userModel.create(newUser);
+                let result = await addUser(newUser);
                 return done(null, result);
             }
             done(null, user);

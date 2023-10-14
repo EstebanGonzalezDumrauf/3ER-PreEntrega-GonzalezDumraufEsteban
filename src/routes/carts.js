@@ -3,10 +3,10 @@ import {
 } from 'express';
 import {
     cartModel
-} from '../dao/models/cart.js';
+} from '../models/cart.js';
 import {
     productModel
-} from '../dao/models/product.js';
+} from '../models/product.js';
 import mongoose from 'mongoose';
 
 

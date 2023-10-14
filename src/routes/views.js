@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
     productModel
-} from '../dao/models/product.js';
+} from '../models/product.js';
 import {
     cartModel
-} from '../dao/models/cart.js';
+} from '../models/cart.js';
 import { authToken } from "../utils.js";
 
 const router = Router();
@@ -28,12 +28,6 @@ router.get('/', publicAccess, (req, res)=> {
 router.get('/register', publicAccess, (req, res)=> {
     res.render('register')
 })
-
-// router.get('/profile', privateAccess, (req, res)=> {
-//     res.render('profile', {
-//         user: req.session.user,
-//     })
-// })
 
 router.get('/resetPassword', publicAccess, (req, res)=> {
     res.render('reset')

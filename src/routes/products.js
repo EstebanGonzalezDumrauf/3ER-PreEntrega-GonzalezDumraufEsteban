@@ -3,8 +3,11 @@ import {
 } from 'express';
 import {
     productModel
-} from '../dao/models/product.js';
+} from '../models/product.js';
 import mongoose from 'mongoose';
+import {
+    getProductsByID
+} from '../controllers/products.js';
 
 const router = Router();
 
@@ -121,7 +124,8 @@ router.get('/:pid', async (req, res) => {
     } = req.params;
     try {
         console.log('Datos recibidos:', pid);
-        const producto = await productModel.findById(pid);
+        //const producto = await productModel.findById(pid);
+        const producto = await getProductsByID(pid)
 
         if (!producto) {
             return res.status(404).json({
