@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { userModel } from "../models/user.js";
-import { getSession } from "../controllers/sessions.js"
+import { getSession, resetPassword } from "../controllers/sessions.js"
 import { createHash, generateToken, isValidPassword } from "../utils.js";
 import passport from "passport";
 
@@ -51,15 +51,7 @@ router.get('/failRegister', async(req, res)=> {
 
 router.post('/resetPassword', async (req, res) => {
     const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).send({ status: "error", error: "Datos incompletos" });
-    }
-    const user = await userModel.findOne({ email });
-    if (!user) {
-        return res.status(404).send({ status: "error", error: "No existe el usuario" });
-    }
-    const passwordHash = createHash(password);
-    await userModel.updateOne({ email }, { $set: { password: passwordHash } })
+    resetPassword(email, password);
     res.send({status: "success", message: "password reseteado"})
 })
 

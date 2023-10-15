@@ -6,6 +6,6 @@ export const getProducts = async (req, res) => {
 };
 
 export const getProductsByID = async (pid, res) => {
-    const products = await getAllProducts(pid);
-    res.json(products);
+    const product = await get_Product_By_ID(pid);
+    res.json(product);
 };

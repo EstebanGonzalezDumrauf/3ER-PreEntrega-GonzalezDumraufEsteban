@@ -6,6 +6,7 @@ import {
     cartModel
 } from '../models/cart.js';
 import { authToken } from "../utils.js";
+import { getProductsOfCart } from '../controllers/carts.js'
 
 const router = Router();
 
@@ -117,7 +118,9 @@ router.get('/api/products/:pid', privateAccess, async (req, res) => {
 router.get('/carts/:cid', privateAccess, async (req, res) => {
     try {
         const { cid } = req.params;
-        let carrito = await cartModel.findOne({ _id: cid }).populate('arrayCart.product');
+
+        //let carrito = await cartModel.findOne({ _id: cid }).populate('arrayCart.product');
+        let carrito = await getProductsOfCart(cid);
         let totalCarrito = 0;
         let cantidadItems = 0;
         let cartItems= [];
