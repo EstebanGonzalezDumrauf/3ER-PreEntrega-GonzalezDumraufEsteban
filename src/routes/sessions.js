@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { userModel } from "../models/user.js";
-import { getSession, resetPassword } from "../controllers/sessions.js"
+import { getSession, resetPassword, logout } from "../controllers/sessions.js"
 import { createHash, generateToken, isValidPassword } from "../utils.js";
 import passport from "passport";
 
@@ -55,27 +55,9 @@ router.post('/resetPassword', async (req, res) => {
     res.send({status: "success", message: "password reseteado"})
 })
 
-router.post('/logout', (req, res) => {
-    // Verifica si el usuario tiene una sesión válida antes de intentar destruirla
-    if (req.session && req.session.user) {
-        req.session.destroy((err) => { // Destruye la sesión
-            if (err) {
-                console.error('Error al cerrar la sesión:', err);
-                res.status(500).json({
-                    error: 'Error al cerrar la sesión'
-                });
-            } else {
-                // La sesión se ha destruido con éxito
-                res.status(200).json({
-                    message: 'Sesión cerrada exitosamente'
-                });
-            }
-        });
-    } else {
-        res.status(200).json({
-            message: 'No hay sesión para cerrar'
-        });
-    }
+router.post('/logout', async (req, res) => {
+    const result = await logout(req, res);
+    return result;
 });
 
 export default router;

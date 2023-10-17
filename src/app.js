@@ -14,6 +14,7 @@ import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { initializePassport } from './config/passport.js';
 import config from './config/config.js';
+import cors from 'cors';
 
 import {
     Server
@@ -21,6 +22,7 @@ import {
 import {
     chatModel
 } from './models/chat.js';
+import MongoSingleton from './class/MongoSingleton.js';
 
 const app = express();
 
@@ -29,6 +31,7 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', path.join(__dirName, 'views'));
 app.set('view engine', 'handlebars');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirName + '/public'));
 app.use(express.urlencoded({
@@ -56,10 +59,12 @@ app.use('/api/sessions', sessionsRouter)
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 
-const connection = mongoose.connect(config.mongoURL,{
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-});
+const connection = MongoSingleton.getInstance();
+
+// mongoose.connect(config.mongoURL,{
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true
+// });
 
 const server = app.listen(config.port, () => {
     console.log(`Server ON en puerto ${config.port}`);

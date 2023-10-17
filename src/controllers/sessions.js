@@ -42,3 +42,25 @@ export const resetPassword = async (email, password, res) => {
     const result = await reset_Pass(email, password);
     return result;
 };
+
+export const logout = async (req, res) => {
+    if (req.session && req.session.user) {
+        req.session.destroy((err) => { // Destruye la sesión
+            if (err) {
+                console.error('Error al cerrar la sesión:', err);
+                return res.status(500).send({
+                    error: 'Error al cerrar la sesión'
+                });
+            } else {
+                // La sesión se ha destruido con éxito
+                res.status(200).send({
+                    message: 'Sesión cerrada exitosamente'
+                });
+            }
+        });
+    } else {
+        res.status(200).send({
+            message: 'No hay sesión para cerrar'
+        });
+    }
+};

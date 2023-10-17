@@ -123,8 +123,7 @@ router.get('/:pid', async (req, res) => {
         pid
     } = req.params;
     try {
-        console.log('Datos recibidos:', pid);
-        //const producto = await productModel.findById(pid);
+        //console.log('Datos recibidos:', pid);
         const producto = await getProductsByID(pid)
 
         if (!producto) {
@@ -198,13 +197,6 @@ router.put('/:pid', async (req, res) => {
     let {
         pid
     } = req.params;
-
-    // if (!datosAUpdate.title || !datosAUpdate.code) {
-    //     return res.send({
-    //         status: "Error",
-    //         error: 'Datos incompletos'
-    //     });
-    // }
 
     let result = await productModel.updateOne({
         _id: pid

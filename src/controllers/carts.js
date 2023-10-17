@@ -12,6 +12,5 @@ export const getCartByID = async (cid, res) => {
 
 export const getProductsOfCart = async (cid, res) => {
     const products = await get_Products_of_Cart(cid);
-    //res.json(products);
     return products;
 };
