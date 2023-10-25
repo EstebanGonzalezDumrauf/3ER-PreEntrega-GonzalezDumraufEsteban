@@ -1,4 +1,4 @@
-import { getAllProducts, get_Product_By_ID } from "../dao/products.js";
+import { getAllProducts, get_Product_By_ID } from "../dao/mongo/products.js";
 
 export const getProducts = async (req, res) => {
     const products = await getAllProducts();

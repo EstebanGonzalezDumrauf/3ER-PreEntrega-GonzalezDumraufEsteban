@@ -5,9 +5,7 @@ import handlebars from 'express-handlebars';
 import productRouter from './routes/products.js';
 import cartRouter from './routes/carts.js'
 import viewsRouter from './routes/views.js';
-import sessionsRouter from './routes/sessions.js'
-//import loginsRouter from './routes/logins.js';
-//import registersRouter from './routes/registers.js';
+import sessionsRouter from './routes/sessions.js';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
@@ -54,8 +52,9 @@ app.use(passport.session());
 
 app.use('/', viewsRouter);
 //app.use('/', loginsRouter);
-app.use('/api/sessions', sessionsRouter)
+app.use('/api/sessions', sessionsRouter);
 //app.use('/', registersRouter);
+app.use('/chat', chatModel);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 

@@ -1,4 +1,4 @@
-import { getAllCarts, get_Cart_By_ID, get_Products_of_Cart } from "../dao/carts.js";
+import { getAllCarts, get_Cart_By_ID, get_Products_of_Cart } from "../dao/mongo/carts.js";
 
 export const getCarts = async (req, res) => {
     const carts = await getAllCarts();

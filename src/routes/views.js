@@ -7,6 +7,7 @@ import {
 } from '../models/cart.js';
 import { authToken } from "../utils.js";
 import { getProductsOfCart } from '../controllers/carts.js'
+import {checkSession, checkAdmin} from "../config/passport.js";
 
 const router = Router();
 
@@ -25,6 +26,10 @@ const privateAccess = (req, res, next) => {
 router.get('/', publicAccess, (req, res)=> {
     res.render('login');
 })
+
+router.get('/chat', checkSession, (req, res) => {
+    res.render('chat', {});
+    })
 
 router.get('/register', publicAccess, (req, res)=> {
     res.render('register')

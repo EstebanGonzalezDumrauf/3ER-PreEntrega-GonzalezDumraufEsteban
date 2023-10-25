@@ -5,7 +5,7 @@ import {
     chatModel
 } from '../dao/models/chat.js';
 
-router.post('/', async (req, res) => {
+router.post('/chat', async (req, res) => {
 
     try {
         let {

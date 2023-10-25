@@ -7,14 +7,10 @@
 //     arrayCart: [{ product: String, quantity: Number }]
 // });
 
-
 // export const cartModel = mongoose.model(cartCollection, cartSchema);
 
 
 import mongoose from 'mongoose';
-import {
-    productModel
-} from './product.js';
 
 const cartCollection = 'carts';
 

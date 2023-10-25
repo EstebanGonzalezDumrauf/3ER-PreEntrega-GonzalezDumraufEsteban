@@ -7,6 +7,29 @@ import gitHubStrategy from 'passport-github2';
 
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = gitHubStrategy.Strategy;
+
+export function checkSession(req, res, next) {
+    //console.log(req);
+    if (req.session && req.session.user.rol === 'usuario') {
+      // Si existe una sesión y el usuario está autenticado
+      return next();
+    } else {
+      // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
+      return res.status(401).json({ message: 'No autorizado' });
+    }
+}
+
+export function checkAdmin(req, res, next) {
+    //console.log("variable" , req.session.user.rol);
+    if (req.session && req.session.user.rol === 'Administrador') {
+      // Si existe una sesión y el usuario está autenticado
+      return next();
+    } else {
+      // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
+      return res.status(401).json({ message: 'No autorizado' });
+    }
+}
+
 export const initializePassport = () => {
     passport.use('register', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;

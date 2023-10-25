@@ -1,4 +1,4 @@
-import { add_User, getAllUser, get_User, reset_Pass } from "../dao/sessions.js";
+import { add_User, getAllUser, get_User, reset_Pass } from "../dao/mongo/sessions.js";
 
 const sessions = [];
 

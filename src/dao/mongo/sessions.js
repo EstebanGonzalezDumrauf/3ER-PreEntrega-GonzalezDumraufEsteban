@@ -1,7 +1,7 @@
 import {
     userModel
-} from '../models/user.js';
-import { createHash } from "../utils.js";
+} from '../../models/user.js';
+import { createHash } from "../../utils.js";
 
 export const getAllUser = async () => {
     return await userModel.find();
