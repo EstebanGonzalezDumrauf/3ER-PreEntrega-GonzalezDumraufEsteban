@@ -8,8 +8,9 @@ import {
     productModel
 } from '../models/product.js';
 import mongoose from 'mongoose';
-import { getProductsOfCart } from '../controllers/carts.js'
-import { updateProduct } from '../controllers/products.js'
+import { getProductsOfCart, getCartByID } from '../controllers/carts.js'
+import { updateProduct, getProductsByID } from '../controllers/products.js'
+import { addTicket } from '../controllers/tickets.js'
 
 
 const router = Router();
@@ -178,24 +179,16 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 });
 
-function HayStock(id, quantity) {
-
-    const producto = cartModel.findById(id);
-
-    if (producto.stock < quantity) {
+async function HayStock(id, quantity) {
+    //const producto = productModel.findById(id);
+    const producto = await getProductsByID(id);
+    const stock =  producto.stock;
+    //console.log('producto:', producto, '  quantity:', quantity, stock);
+    if (stock < quantity) {
+        console.log('false');
         return false;
     } else {
-        return true;
-    }
-}
-
-function UpdateStock(id, quantity) {
-
-    const producto = cartModel.findById(id);
-
-    if (producto.stock < quantity) {
-        return false;
-    } else {
+        console.log('true');
         return true;
     }
 }
@@ -204,47 +197,58 @@ router.post('/:cid/purchase', async (req, res) => {
     try {
         const { cid } = req.params;
 
-        //let carrito = await cartModel.findOne({ _id: cid }).populate('arrayCart.product');
         let carrito = await getProductsOfCart(cid);
         let totalCarrito = 0;
         let cantidadItems = 0;
-        let cartItems= [];
+        let cartItems = [];
+        let cartItemsSinStock = [];
+        let msj = "";
 
         if (carrito) {
-            cartItems = carrito.arrayCart.map(item => {
-
-                if (HayStock(item.product, item.quantity)) {
+            await Promise.all(carrito.arrayCart.map(async (item) => {
+                // console.log('producto:', item.product, '  quantity:', item.quantity);
+                let hayStock = await HayStock(item.product, item.quantity);
+                if (hayStock) {
                     //// IMPLEMENTAR DESCUENTO DE STOCK
                     const id = item.product;
                     const stockAReducir = item.quantity;
                 
                     console.log(id._id, stockAReducir);
-                    const result = updateProduct({ _id: id }, { $inc: { stock: -stockAReducir } });
+                    const result = await updateProduct({ _id: id }, { $inc: { stock: -stockAReducir } });
 
                     //// CALCULAR DATOS NECESARIOS PARA EL TICKET
-                    const subtotal = item.quantity * item.product.price;
+                    const subtotal = stockAReducir * item.product.price;
                     totalCarrito += subtotal;
                     cantidadItems += item.quantity;
                     console.log('Entro en el if');
                 } else {
-                    console.log('No entro en el if');
+                    //console.log('item', item);
+                    cartItemsSinStock.push(item);
+                    //console.log('array' , cartItemsSinStock);
                     /// ALMACENAR EN ARREGLO LOS PRODUCTOS SIN STOCK SUFICIENTE
+                    msj = "hay productos sin stock";
                 }
-            });    
+            }));    
         }
 
+        const newTicket = {
+            amount: totalCarrito,
+            purchaser: "EstebanCoder"
+        };
+        
         /// GENERAR TICKET
-
+        const ticketCompra = await addTicket(newTicket);
 
         res.send({
             result: 'success',
-            payload: carrito
+            payload: cartItemsSinStock
         });
 
     } catch (error) {
         console.log(error);
     }
 });
+
 
 
 export default router;

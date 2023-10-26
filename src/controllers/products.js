@@ -7,7 +7,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductsByID = async (pid, res) => {
     const product = await get_Product_By_ID(pid);
-    res.json(product);
+    return product;
 };
 
 export const updateProduct = async (pid, req, res) => {
