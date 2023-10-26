@@ -1,38 +1,55 @@
 import passport from "passport";
 import local from "passport-local"
-import { userModel } from "../models/user.js"
-import { getUser, addUser } from "../controllers/sessions.js"
-import { createHash, isValidPassword } from '../utils.js'
+import {
+    userModel
+} from "../models/user.js"
+import {
+    getUser,
+    addUser
+} from "../controllers/sessions.js"
+import {
+    createHash,
+    isValidPassword
+} from '../utils.js'
 import gitHubStrategy from 'passport-github2';
 
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = gitHubStrategy.Strategy;
 
 export function checkSession(req, res, next) {
-    //console.log(req);
     if (req.session && req.session.user.rol === 'usuario') {
-      // Si existe una sesión y el usuario está autenticado
-      return next();
+        return next();
     } else {
-      // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
-      return res.status(401).json({ message: 'No autorizado' });
+        return res.status(401).json({
+            message: 'No autorizado'
+        });
     }
 }
 
 export function checkAdmin(req, res, next) {
     //console.log("variable" , req.session.user.rol);
     if (req.session && req.session.user.rol === 'Administrador') {
-      // Si existe una sesión y el usuario está autenticado
-      return next();
+        // Si existe una sesión y el usuario está autenticado
+        return next();
     } else {
-      // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
-      return res.status(401).json({ message: 'No autorizado' });
+        // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
+        return res.status(401).json({
+            message: 'No autorizado'
+        });
     }
 }
 
 export const initializePassport = () => {
-    passport.use('register', new LocalStrategy({ passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
+    passport.use('register', new LocalStrategy({
+        passReqToCallback: true,
+        usernameField: 'email'
+    }, async (req, username, password, done) => {
+        const {
+            first_name,
+            last_name,
+            email,
+            age
+        } = req.body;
         try {
             //const exists = await userModel.findOne({ email });
             const exists = await getUser(email);
@@ -56,7 +73,9 @@ export const initializePassport = () => {
         }
     }));
 
-    passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
+    passport.use('login', new LocalStrategy({
+        usernameField: 'email'
+    }, async (username, password, done) => {
         try {
             //let user = await userModel.findOne({ email: username });
             let user = await getUser(username);
@@ -93,8 +112,11 @@ export const initializePassport = () => {
             //let user = await userModel.findOne({ first_name: profile._json.name, email: profile._json.username });
             let user = await getUser(profile._json.username);
             if (!user) {
-                let newUser = {first_name: profile._json.name, email: profile._json.username};
-                
+                let newUser = {
+                    first_name: profile._json.name,
+                    email: profile._json.username
+                };
+
                 //let result = await userModel.create(newUser);
                 let result = await addUser(newUser);
                 return done(null, result);
@@ -108,12 +130,15 @@ export const initializePassport = () => {
     passport.serializeUser((user, done) => {
         if (user.email === "adminCoder@coder.com") {
             // Serialización especial para el usuario 'adminCoder@coder.com'
-            done(null, { email: user.email, role: user.rol });
+            done(null, {
+                email: user.email,
+                role: user.rol
+            });
         } else {
             done(null, user._id);
         }
     });
-    
+
     passport.deserializeUser(async (id, done) => {
         if (typeof id === 'object' && id.email === 'adminCoder@coder.com') {
             // Deserialización especial para el usuario 'adminCoder@coder.com'
@@ -123,7 +148,7 @@ export const initializePassport = () => {
             done(null, user);
         }
     });
-    
+
     // passport.serializeUser((user,done)=> {
     //     done(null, user._id)
     // })

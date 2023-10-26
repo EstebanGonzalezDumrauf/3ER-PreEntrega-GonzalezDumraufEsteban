@@ -12,3 +12,7 @@ export const getAllProducts = async () => {
 export const get_Product_By_ID = async (pid) => {
     return await productModel.findOne(pid);
 };
+
+export const update_Product = async (filter, DatosAUpdate) => {
+    return await productModel.updateOne(filter, DatosAUpdate);
+}

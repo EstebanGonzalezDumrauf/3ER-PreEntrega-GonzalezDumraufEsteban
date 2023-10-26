@@ -8,6 +8,8 @@ import {
     productModel
 } from '../models/product.js';
 import mongoose from 'mongoose';
+import { getProductsOfCart } from '../controllers/carts.js'
+import { updateProduct } from '../controllers/products.js'
 
 
 const router = Router();
@@ -176,6 +178,73 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 });
 
+function HayStock(id, quantity) {
+
+    const producto = cartModel.findById(id);
+
+    if (producto.stock < quantity) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function UpdateStock(id, quantity) {
+
+    const producto = cartModel.findById(id);
+
+    if (producto.stock < quantity) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+router.post('/:cid/purchase', async (req, res) => {
+    try {
+        const { cid } = req.params;
+
+        //let carrito = await cartModel.findOne({ _id: cid }).populate('arrayCart.product');
+        let carrito = await getProductsOfCart(cid);
+        let totalCarrito = 0;
+        let cantidadItems = 0;
+        let cartItems= [];
+
+        if (carrito) {
+            cartItems = carrito.arrayCart.map(item => {
+
+                if (HayStock(item.product, item.quantity)) {
+                    //// IMPLEMENTAR DESCUENTO DE STOCK
+                    const id = item.product;
+                    const stockAReducir = item.quantity;
+                
+                    console.log(id._id, stockAReducir);
+                    const result = updateProduct({ _id: id }, { $inc: { stock: -stockAReducir } });
+
+                    //// CALCULAR DATOS NECESARIOS PARA EL TICKET
+                    const subtotal = item.quantity * item.product.price;
+                    totalCarrito += subtotal;
+                    cantidadItems += item.quantity;
+                    console.log('Entro en el if');
+                } else {
+                    console.log('No entro en el if');
+                    /// ALMACENAR EN ARREGLO LOS PRODUCTOS SIN STOCK SUFICIENTE
+                }
+            });    
+        }
+
+        /// GENERAR TICKET
+
+
+        res.send({
+            result: 'success',
+            payload: carrito
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 
 export default router;
