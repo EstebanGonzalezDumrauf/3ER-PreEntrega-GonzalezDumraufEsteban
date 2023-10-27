@@ -206,27 +206,20 @@ router.post('/:cid/purchase', async (req, res) => {
 
         if (carrito) {
             await Promise.all(carrito.arrayCart.map(async (item) => {
-                // console.log('producto:', item.product, '  quantity:', item.quantity);
                 let hayStock = await HayStock(item.product, item.quantity);
                 if (hayStock) {
-                    //// IMPLEMENTAR DESCUENTO DE STOCK
                     const id = item.product;
                     const stockAReducir = item.quantity;
                 
                     console.log(id._id, stockAReducir);
                     const result = await updateProduct({ _id: id }, { $inc: { stock: -stockAReducir } });
 
-                    //// CALCULAR DATOS NECESARIOS PARA EL TICKET
                     const subtotal = stockAReducir * item.product.price;
                     totalCarrito += subtotal;
                     cantidadItems += item.quantity;
                     console.log('Entro en el if');
                 } else {
-                    //console.log('item', item);
-                    cartItemsSinStock.push(item);
-                    //console.log('array' , cartItemsSinStock);
-                    /// ALMACENAR EN ARREGLO LOS PRODUCTOS SIN STOCK SUFICIENTE
-                    msj = "hay productos sin stock";
+                    cartItemsSinStock.push(item.product._id);
                 }
             }));    
         }
@@ -235,9 +228,8 @@ router.post('/:cid/purchase', async (req, res) => {
             amount: totalCarrito,
             purchaser: "EstebanCoder"
         };
-        
-        /// GENERAR TICKET
-        const ticketCompra = await addTicket(newTicket);
+                
+        const ticketCompra = await addTicket(newTicket); /// GENERAR TICKET
 
         res.send({
             result: 'success',
