@@ -11,6 +11,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { initializePassport } from './config/passport.js';
+import { checkSession, checkAdmin } from "./config/passport.js";
 import config from './config/config.js';
 import cors from 'cors';
 

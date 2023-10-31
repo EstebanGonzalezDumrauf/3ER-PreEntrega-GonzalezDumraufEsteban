@@ -8,10 +8,10 @@ import {
     productModel
 } from '../models/product.js';
 import mongoose from 'mongoose';
-import { getProductsOfCart, getCartByID } from '../controllers/carts.js'
+import { getProductsOfCart, getCartByID, updateProductsInCart } from '../controllers/carts.js'
 import { updateProduct, getProductsByID } from '../controllers/products.js'
 import { addTicket } from '../controllers/tickets.js'
-
+import { checkSession, checkAdmin } from "../config/passport.js";
 
 const router = Router();
 
@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
 
 
 
-router.put('/:cid/products/:pid', async (req, res) => {
+router.put('/:cid/products/:pid', checkSession, async (req, res) => {
     try {
         const { cid, pid } = req.params;
         const { quantity } = req.body;
@@ -99,7 +99,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
 });
 
 
-router.put('/:cid', async (req, res) => {
+router.put('/:cid', checkSession, async (req, res) => {
     try {
         let arrayCart = req.body;
         let {
@@ -157,7 +157,7 @@ router.delete('/:cid', async (req, res) => {
     });
 })
 
-router.delete('/:cid/products/:pid', async (req, res) => {
+router.delete('/:cid/products/:pid', checkSession, async (req, res) => {
     try {
         const { pid, cid } = req.params;
 
@@ -193,7 +193,7 @@ async function HayStock(id, quantity) {
     }
 }
 
-router.post('/:cid/purchase', async (req, res) => {
+router.post('/:cid/purchase', checkSession, async (req, res) => {
     try {
         const { cid } = req.params;
 
@@ -202,6 +202,7 @@ router.post('/:cid/purchase', async (req, res) => {
         let cantidadItems = 0;
         let cartItems = [];
         let cartItemsSinStock = [];
+        let arrayCartPendientes = [];
         let msj = "";
 
         if (carrito) {
@@ -219,6 +220,7 @@ router.post('/:cid/purchase', async (req, res) => {
                     cantidadItems += item.quantity;
                     console.log('Entro en el if');
                 } else {
+                    arrayCartPendientes.push(item);
                     cartItemsSinStock.push(item.product._id);
                 }
             }));    
@@ -231,6 +233,7 @@ router.post('/:cid/purchase', async (req, res) => {
                 
         const ticketCompra = await addTicket(newTicket); /// GENERAR TICKET
 
+        const prodSinComprar = await updateProductsInCart(cid, arrayCartPendientes);
         res.send({
             result: 'success',
             payload: cartItemsSinStock

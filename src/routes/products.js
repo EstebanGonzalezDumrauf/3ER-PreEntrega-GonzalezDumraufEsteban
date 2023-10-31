@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import {
     getProductsByID
 } from '../controllers/products.js';
+import {checkSession, checkAdmin} from "../config/passport.js";
 
 const router = Router();
 
@@ -147,7 +148,7 @@ router.get('/:pid', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/', checkAdmin, async (req, res) => {
     try {
         let {
             title,
@@ -191,7 +192,7 @@ router.post('/', async (req, res) => {
 
 })
 
-router.put('/:pid', async (req, res) => {
+router.put('/:pid', checkAdmin, async (req, res) => {
 
     let datosAUpdate = req.body;
     let {
@@ -208,7 +209,7 @@ router.put('/:pid', async (req, res) => {
     });
 })
 
-router.delete('/:pid', async (req, res) => {
+router.delete('/:pid', checkAdmin, async (req, res) => {
 
     let {
         pid

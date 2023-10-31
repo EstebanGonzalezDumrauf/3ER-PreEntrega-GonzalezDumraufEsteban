@@ -17,6 +17,7 @@ const LocalStrategy = local.Strategy;
 const GitHubStrategy = gitHubStrategy.Strategy;
 
 export function checkSession(req, res, next) {
+    console.log(req.session);
     if (req.session && req.session.user.rol === 'usuario') {
         return next();
     } else {

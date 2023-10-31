@@ -39,7 +39,7 @@ router.get('/resetPassword', publicAccess, (req, res)=> {
     res.render('reset')
 })
 
-router.get('/products', privateAccess, async (req, res) => {
+router.get('/products', checkSession, async (req, res) => {
 //router.get('/products', authToken, async (req, res) => {
     const {
         page = 1
@@ -85,7 +85,7 @@ router.get('/products', privateAccess, async (req, res) => {
     });
 })
 
-router.get('/api/products/:pid', privateAccess, async (req, res) => {
+router.get('/api/products/:pid', checkSession, async (req, res) => {
     try {
         //console.log('Datos recibidos:', pid);
         const productId = req.params.pid;
@@ -120,7 +120,7 @@ router.get('/api/products/:pid', privateAccess, async (req, res) => {
     }
 });
 
-router.get('/carts/:cid', privateAccess, async (req, res) => {
+router.get('/carts/:cid', checkSession, async (req, res) => {
     try {
         const { cid } = req.params;
 
