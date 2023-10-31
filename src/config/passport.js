@@ -17,10 +17,16 @@ const LocalStrategy = local.Strategy;
 const GitHubStrategy = gitHubStrategy.Strategy;
 
 export function checkSession(req, res, next) {
-    console.log(req.session);
-    if (req.session && req.session.user.rol === 'usuario') {
-        return next();
-    } else {
+    try {
+        console.log(req.session);
+        if (req.session && req.session.user.rol === 'usuario') {
+            return next();
+        } else {
+            return res.status(401).json({
+                message: 'No autorizado'
+            });
+        }
+    } catch (error) {
         return res.status(401).json({
             message: 'No autorizado'
         });
@@ -28,12 +34,17 @@ export function checkSession(req, res, next) {
 }
 
 export function checkAdmin(req, res, next) {
-    //console.log("variable" , req.session.user.rol);
-    if (req.session && req.session.user.rol === 'Administrador') {
-        // Si existe una sesión y el usuario está autenticado
-        return next();
-    } else {
-        // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
+    try {
+        if (req.session && req.session.user.rol === 'Administrador') {
+            // Si existe una sesión y el usuario está autenticado
+            return next();
+        } else {
+            // Si no hay sesión o el usuario no está autenticado, redirige o responde con un error
+            return res.status(401).json({
+                message: 'No autorizado'
+            });
+        }
+    } catch (error) {
         return res.status(401).json({
             message: 'No autorizado'
         });
